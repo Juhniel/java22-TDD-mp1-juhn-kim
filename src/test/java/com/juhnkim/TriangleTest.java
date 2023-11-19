@@ -194,4 +194,13 @@ class TriangleTest {
                 "Input with less than 3 sides should not create a valid triangle");
     }
 
+    @Test
+    @DisplayName("Test getUserInput with large numeric values")
+    public void testGetUserInputLargeValues() {
+        userInput("999999999,999999998,999999997\n");
+        Triangle triangle = new Triangle();
+        triangle.getUserInput();
+        assertEquals(Triangle.TYPE.SCALENE,triangle.getCurrent_type(),
+                "Input '999999999,999999998,999999997' should create a SCALENE triangle");
+    }
 }
