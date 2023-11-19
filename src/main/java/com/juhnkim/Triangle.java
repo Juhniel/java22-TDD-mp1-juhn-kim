@@ -25,7 +25,6 @@ public class Triangle {
 
 	public Triangle(int a, int b, int c) {
 		this.setCurrent_type(a, b, c);
-
 	}
 	
 	public Triangle(String[] in) {
@@ -101,9 +100,9 @@ public class Triangle {
 		return temp;
 	}
 
-	public static void main(String[] args) {
+//	public static void main(String[] args) {
 //			Triangle triangle = new Triangle();
 //			triangle.getUserInput();
 //			triangle.getCurrent_type();
-	}
+//	}
 }
