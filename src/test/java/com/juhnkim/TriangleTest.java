@@ -3,6 +3,8 @@ package com.juhnkim;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayInputStream;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TriangleTest {
@@ -40,7 +42,7 @@ class TriangleTest {
     public void testZeroValuesConstructor() {
         Triangle triangle = new Triangle(0, 0, 0);
         assertNull(triangle.getCurrent_type(),
-                "Not a triangle with 0, 0, 0 values");
+                "Not a valid triangle with 0, 0, 0 values");
     }
 
     @Test
@@ -51,6 +53,30 @@ class TriangleTest {
                 "Not a triangle with no values");
     }
 
+    @Test
+    @DisplayName("Test constructor with invalid sides")
+    public void testConstructorWithInvalidSides() {
+        Triangle triangle = new Triangle(1, 1, 3);
+        assertNull(triangle.getCurrent_type(),
+                "Triangle with sides 1, 1, 3 should not form a valid triangle");
+    }
+
+    @Test
+    @DisplayName("Test constructor with negative values")
+    public void testConstructorWithNegativeValues() {
+        Triangle triangle = new Triangle(new String[]{"-4", "-5", "-2"});
+        assertNull(triangle.getCurrent_type(),
+                "Triangle with sides -4, -5, -2 should not form a valid triangle");
+    }
+
+    @Test
+    @DisplayName("Test constructor with maximum integer values")
+    public void testConstructorWithMaxIntValues() {
+        Triangle triangle = new Triangle(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+        assertEquals(Triangle.TYPE.EQUILATERAL, triangle.getCurrent_type(),
+                "Triangle with maximum integer values should be EQUILATERAL");
+    }
+
     /**
      * CONSTRUCTOR TESTS /w String array parameter
      */
@@ -58,7 +84,7 @@ class TriangleTest {
     @Test
     @DisplayName("Test constructor with valid string array for an SCALENE triangle")
     public void testConstructorWithStringArrayValidScalene() {
-        Triangle triangle = new Triangle(new String[]{"2", "3", "5"});
+        Triangle triangle = new Triangle(new String[]{"2", "3", "4"});
         assertEquals(Triangle.TYPE.SCALENE, triangle.getCurrent_type(),
                 "Triangle with sides {2, 3, 5} - SCALENE Triangle");
     }
@@ -86,4 +112,86 @@ class TriangleTest {
         assertNull(triangle.getCurrent_type(),
                 "Not a triangle");
     }
+
+    @Test
+    @DisplayName("Test constructor with invalid string array values")
+    public void testConstructorWithStringArrayInvalidSides() {
+        Triangle triangle = new Triangle(new String[]{"1", "1", "3"});
+        assertNull(triangle.getCurrent_type(),
+                "Triangle with sides 1, 1, 3 should not form a valid triangle");
+    }
+
+    @Test
+    @DisplayName("Test constructor with negative string array values")
+    public void testConstructorWithStringArrayNegativeValues() {
+        Triangle triangle = new Triangle(new String[]{"-4", "-5", "-2"});
+        assertNull(triangle.getCurrent_type(),
+                "Triangle with sides -4, -5, -2 should not form a valid triangle");
+    }
+
+    @Test
+    @DisplayName("Test constructor with string array containing non-integer values")
+    public void testConstructorWithStringArrayNonInteger() {
+        Triangle triangle = new Triangle(new String[]{"3", "four", "5"});
+        assertNull(triangle.getCurrent_type(),
+                "Triangle should not be created with a non-integer value in the array");
+    }
+
+    @Test
+    @DisplayName("Test constructor with string array of maximum integer values")
+    public void testConstructorWithStringArrayMaxIntValues() {
+        Triangle triangle = new Triangle(new String[]{String.valueOf(Integer.MAX_VALUE), String.valueOf(Integer.MAX_VALUE), String.valueOf(Integer.MAX_VALUE)});
+        assertEquals(Triangle.TYPE.EQUILATERAL, triangle.getCurrent_type(),
+                "Triangle with string representations of maximum integer values should be EQUILATERAL");
+    }
+
+    @Test
+    @DisplayName("Test constructor with string array of extremely large numbers")
+    public void testConstructorWithStringArrayExtremelyLargeNumbers() {
+        Triangle triangle = new Triangle(new String[]{"9999999999", "9999999999", "9999999999"});
+        assertNull(triangle.getCurrent_type(),
+                "Triangle with extremely large numbers should not form a valid triangle");
+    }
+
+
+    /**
+     * User Input Tests
+     */
+
+    // Helper method to read user input from console
+    private void userInput(String data) {
+        ByteArrayInputStream testIn = new ByteArrayInputStream(data.getBytes());
+        System.setIn(testIn);
+    }
+
+    @Test
+    @DisplayName("Test getUserInput with valid scalene triangle input")
+    public void testGetUserInputValidScalene() {
+        userInput("3,4,5\n");
+        Triangle triangle = new Triangle();
+        triangle.getUserInput();
+        assertEquals(Triangle.TYPE.SCALENE, triangle.getCurrent_type(),
+                "Input '3,4,5' should create a SCALENE triangle");
+    }
+
+    @Test
+    @DisplayName("Test getUserInput with invalid input (non-numeric)")
+    public void testGetUserInputNonNumeric() {
+        userInput("a,b,c\n");
+        Triangle triangle = new Triangle();
+        triangle.getUserInput();
+        assertNull(triangle.getCurrent_type(),
+                "Non-numeric input should not create a valid triangle");
+    }
+
+    @Test
+    @DisplayName("Test getUserInput with incorrect number of sides")
+    public void testGetUserInputIncorrectNumberOfSides() {
+        userInput("1,2\n");
+        Triangle triangle = new Triangle();
+        triangle.getUserInput();
+        assertNull(triangle.getCurrent_type(),
+                "Input with less than 3 sides should not create a valid triangle");
+    }
+
 }
