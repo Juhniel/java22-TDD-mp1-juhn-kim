@@ -1,4 +1,4 @@
-package main;
+package com.juhnkim;
 
 import java.util.Scanner;
 
