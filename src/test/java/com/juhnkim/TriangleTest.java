@@ -1,5 +1,6 @@
 package com.juhnkim;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -8,6 +9,7 @@ import java.io.ByteArrayInputStream;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TriangleTest {
+
 
     /**
      * CONSTRUCTOR TESTS /w int parameters
@@ -45,6 +47,7 @@ class TriangleTest {
                 "Not a valid triangle with 0, 0, 0 values");
     }
 
+
     @Test
     @DisplayName("Test constructor with no values in constructor")
     public void testEmptyConstructor() {
@@ -62,19 +65,19 @@ class TriangleTest {
     }
 
     @Test
+    @DisplayName("Test constructor with MAX integer values")
+    public void testConstructorWithMaxIntValues() {
+        Triangle triangle = new Triangle(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+        assertEquals(Triangle.TYPE.EQUILATERAL, triangle.getCurrent_type(),
+                "Triangle with maximum integer values should be EQUILATERAL");
+    }
+
+    @Test
     @DisplayName("Test constructor with negative values")
     public void testConstructorWithNegativeValues() {
         Triangle triangle = new Triangle(new String[]{"-4", "-5", "-2"});
         assertNull(triangle.getCurrent_type(),
                 "Triangle with sides -4, -5, -2 should not form a valid triangle");
-    }
-
-    @Test
-    @DisplayName("Test constructor with maximum integer values")
-    public void testConstructorWithMaxIntValues() {
-        Triangle triangle = new Triangle(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
-        assertEquals(Triangle.TYPE.EQUILATERAL, triangle.getCurrent_type(),
-                "Triangle with maximum integer values should be EQUILATERAL");
     }
 
     /**
@@ -109,6 +112,14 @@ class TriangleTest {
     @DisplayName("Test constructor with a empty string array")
     public void testEmptyStringArrayConstructor() {
         Triangle triangle = new Triangle(new String[]{});
+        assertNull(triangle.getCurrent_type(),
+                "Not a triangle");
+    }
+
+    @Test
+    @DisplayName("Test constructor with a null value")
+    public void testNullStringArrayConstructor() {
+        Triangle triangle = new Triangle(new String[]{null, null, null});
         assertNull(triangle.getCurrent_type(),
                 "Not a triangle");
     }
@@ -158,12 +169,16 @@ class TriangleTest {
      * User Input Tests
      */
 
+    @AfterEach
+    public void restoreSystemInput() {
+        System.setIn(System.in);
+    }
+
     // Helper method to read user input from console
     private void userInput(String data) {
         ByteArrayInputStream testIn = new ByteArrayInputStream(data.getBytes());
         System.setIn(testIn);
     }
-
     @Test
     @DisplayName("Test getUserInput with valid scalene triangle input")
     public void testGetUserInputValidScalene() {
@@ -195,6 +210,26 @@ class TriangleTest {
     }
 
     @Test
+    @DisplayName("Test getUserInput with extra whitespaces in input")
+    public void testGetUserInputWithExtraWhitespaces() {
+        userInput(" 3 , 4 , 5 \n");
+        Triangle triangle = new Triangle();
+        triangle.getUserInput();
+        assertNull(triangle.getCurrent_type(),
+                "Input with extra whitespaces ' 3 , 4 , 5 ' should not create a valid triangle");
+    }
+
+    @Test
+    @DisplayName("Test getUserInput with incorrect delimiters in input")
+    public void testGetUserInputWithIncorrectDelimiters() {
+        userInput("3:4;5 \n");
+        Triangle triangle = new Triangle();
+        triangle.getUserInput();
+        assertNull(triangle.getCurrent_type(),
+                "Input with incorrect delimiters '3:4;5' should not create a valid triangle");
+    }
+
+    @Test
     @DisplayName("Test getUserInput with large numeric values")
     public void testGetUserInputLargeValues() {
         userInput("999999999,999999998,999999997\n");
@@ -202,5 +237,14 @@ class TriangleTest {
         triangle.getUserInput();
         assertEquals(Triangle.TYPE.SCALENE,triangle.getCurrent_type(),
                 "Input '999999999,999999998,999999997' should create a SCALENE triangle");
+    }
+
+    @Test
+    @DisplayName("Test getUserInput with no input")
+    public void testGetUserInputNoValue() {
+        userInput("\n");
+        Triangle triangle = new Triangle();
+        triangle.getUserInput();
+        assertNull(triangle.getCurrent_type(), "Input is empty or null");
     }
 }
